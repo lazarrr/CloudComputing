@@ -1,0 +1,11 @@
+outliers:
+  class: File
+  path: outliers.py
+train:
+  class: File
+  path: train.py
+in_csv:
+  class: File
+  path: HousingData.csv
+col_name: "MEDV"
+tr_ratio: 0.80
