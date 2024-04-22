@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: training-validation-job
+spec:
+  parallelism: 5
+  completions: 5
+  template:
+    spec:
+      volumes:
+        - name: dataset-volume
+          configMap:
+            name: dataset-configmap
+      containers:
+        - name: training-validation-container
+          image: pegaz13/py-env-v:new
+          command: ["python", "/app/train.py"]
+          args: ["$(INPUT)","$(K)", "$(COL_NAME)"]
+          env:
+            - name: INPUT
+              valueFrom:
+                configMapKeyRef:
+                  name: dataset-configmap
+                  key: input_data_path
+            - name: K
+              valueFrom:
+                configMapKeyRef:
+                  name: dataset-configmap
+                  key: k
+            - name: COL_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: dataset-configmap
+                  key: col_name
+          volumeMounts:
+            - name: dataset-volume
+              mountPath: /data
+              readOnly: true
+      restartPolicy: Never
+  backoffLimit: 4
