@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      volumes:
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: persistentvc-data
+      containers:
+      - name: app
+        image: pegaz13/py-env-vi:latest
+        imagePullPolicy: Always
+        command: ["python", "/app/app.py"]
+        ports:
+        - containerPort: 5000
+        env:
+        - name: data_path
+          value: "/home/lazark/VI/data/wine-quality-white-and-red.csv"
+        - name: model_path
+          value: "/home/lazark/VI/data/wine-model.pkl"
+        volumeMounts:
+          - mountPath: "/home/lazark/VI"
+            name: data-storage
