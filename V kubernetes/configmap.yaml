@@ -3,7 +3,4 @@ kind: ConfigMap
 metadata:
   name: dataset-configmap
 data:
-  input_data_path: /app/HousingData.csv
-  random_state: "0"
-  k: "0"
   col_name: "MEDV"

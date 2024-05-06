@@ -9,32 +9,20 @@ spec:
     spec:
       volumes:
         - name: dataset-volume
-          configMap:
-            name: dataset-configmap
+          persistentVolumeClaim:
+            claimName: persistent-volume-claim-data
       containers:
         - name: training-validation-container
-          image: pegaz13/py-env-v:new
+          image: pegaz13/py-env-v:latest
           command: ["python", "/app/train.py"]
-          args: ["$(INPUT)","$(K)", "$(COL_NAME)"]
           env:
-            - name: INPUT
-              valueFrom:
-                configMapKeyRef:
-                  name: dataset-configmap
-                  key: input_data_path
-            - name: K
-              valueFrom:
-                configMapKeyRef:
-                  name: dataset-configmap
-                  key: k
-            - name: COL_NAME
-              valueFrom:
-                configMapKeyRef:
-                  name: dataset-configmap
-                  key: col_name
+            - name: data_path
+              value: "/home/lazark/V/HousingData.csv"
+            - name: col_name
+              value: "MEDV"
           volumeMounts:
             - name: dataset-volume
-              mountPath: /data
+              mountPath: "/home/lazark/V"
               readOnly: true
       restartPolicy: Never
   backoffLimit: 4
